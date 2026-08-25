@@ -4,7 +4,7 @@
 Hướng dẫn này cung cấp khung lộ trình học tập **Master Curriculum (12 Module Cốt Lõi + 2 Module Tùy Chọn)** được tích hợp hoàn chỉnh giữa:
 1. 📹 **Khóa Packt (Core Engine & Production)**: [Agentic AI Systems: Build & Deploy with LangChain/LangGraph](https://www.packtpub.com/en-us/product/agentic-ai-systems-build-deploy-with-langchainlanggraph-9781807780814) (Packt Publishing).
 2. 📹 **Khóa Udemy (Docker Essentials)**: [Docker & Kubernetes: The Practical Guide](https://www.udemy.com/course/docker-kubernetes-the-practical-guide/) (Maximilian Schwarzmüller - Sections 1–7, 9 [lọc], 10).
-3. 🆓 **Các Khóa Học Miễn Phí Bổ Sung (Free Supplemental Courses)** từ **Anthropic Academy**, **DeepLearning.AI**, **Vercel**, **freeCodeCamp**, **Hugging Face**, **Neon Postgres**, **Async Python Playground (Ali Gheshlaghi)** và **MCP Official Docs** để bù đắp các khoảng trống công nghệ (Async Python, Web UI, `pgvector`, vLLM, LlamaParse, MCP Masterclass, RAG Evals).
+3. 🆓 **Các Khóa Học Miễn Phí Bổ Sung (Free Supplemental Courses)** từ **Anthropic Academy**, **DeepLearning.AI**, **Vercel Academy**, **freeCodeCamp**, **Hugging Face**, **Neon Postgres**, **Async Python Playground (Ali Gheshlaghi)** và **MCP Official Docs** để bù đắp các khoảng trống công nghệ (Async Python, Web UI, `pgvector`, vLLM, LlamaParse, MCP Masterclass, RAG Evals).
 
 Lộ trình bao gồm **12 Module cốt lõi (Module 0–11) + 2 Module nâng cao tùy chọn (Module 12 & Module 13)**, kết hợp giữa **Lý thuyết bài giảng** $\rightarrow$ **Hands-on Demos & Bài tập** $\rightarrow$ **4 Dự án thực tế lớn (Projects)**.
 
@@ -224,19 +224,27 @@ Lộ trình bao gồm **12 Module cốt lõi (Module 0–11) + 2 Module nâng ca
 ---
 
 ### 🌐 Module 11: Full-Stack Web AI Interface (Next.js & Vercel AI SDK)
-> **Mục tiêu**: Xây dựng giao diện Web AI hiện đại, hỗ trợ HTTP Streaming Response (stream từng token), Chat UI, Generative UI và Tool Calling UI.
+> **Mục tiêu**: Xây dựng, tối ưu hóa và triển khai ứng dụng Web AI chuẩn Production (Product Review Summarizer & Chatbot UI) sử dụng Next.js App Router, Vercel AI SDK (`generateText`, `generateObject`, `useChat`), Zod Schema, Vercel AI Gateway và caching directive `use cache`.
 
 * **1. Nội dung Kiến thức Cần nạp**:
-  * Khởi tạo dự án Web AI với Next.js 15 (App Router, TypeScript, TailwindCSS, Shadcn/ui).
-  * Tích hợp **Vercel AI SDK**: Hooks (`useChat`, `useCompletion`), Streaming text & Data streams.
-  * Kết nối Frontend Next.js với Backend Agent FastAPI / LangGraph.
+  * **Next.js & Server Components**: Khởi tạo dự án Next.js (App Router, Server Components, Dynamic Routes, Static Generation, TypeScript, TailwindCSS, Shadcn/ui).
+  * **Vercel AI SDK Core**:
+    - Text generation trong Server Components với `generateText`.
+    - Trích xuất Structured Outputs (Pros, Cons, Key Themes) với `generateObject` kết hợp schema validation bằng Zod.
+    - Kỹ thuật Prompt Engineering: Few-shot examples, Tone guidance & Output cleanup.
+    - Streaming UI & Hooks tương tác realtime (`useChat`, `useCompletion`), HTTP Streaming (SSE), Generative UI & Tool Calling UI.
+  * **Tối ưu Hiệu Năng, Chi Phí & Production Readiness**:
+    - Áp dụng directive `use cache` thông minh giúp giảm tới 97% chi phí API calls.
+    - Vercel AI Gateway: Cấu hình API keys/env, Automatic model failover, Observability (structured logging, analytics, alerts).
+    - Kết nối Frontend Next.js với Backend Agent FastAPI / LangGraph và triển khai Production trực tiếp lên Vercel Platform.
 * **2. Tài nguyên Tra cứu & Bài giảng**:
+  * 🎓 **Khóa Vercel Academy Official (Khuyên dùng)**: [Creating an AI Summary App with Next.js](https://vercel.com/academy/ai-summary-app-with-nextjs) (Instructor: Eve Porcello — Khóa học chính thức từ Vercel: Dựng ứng dụng AI Product Review Summarizer hoàn chỉnh với Next.js 16, Vercel AI SDK `generateText`/`generateObject`, Zod, directive `use cache`, AI Gateway & Vercel deploy).
   * 📹 **Khóa freeCodeCamp**: [Build a Support Agent with Vercel AI SDK](https://www.youtube.com/watch?v=WKIjkxxNH0c) (Hướng dẫn tự dựng AI Support Agent với RAG, Tool Calling và Web Search).
   * 📹 **Khóa 2 (Developers Digest)**: [Agents 101: Build and Deploy Anything with AI Agents](https://www.developersdigest.tech/tutorials/eWs50bhFvMY) (Hướng dẫn dựng Full-stack Next.js AI App + Vercel AI Gateway + CI/CD Deployment).
-  * 📖 **Docs Tra cứu**: [Vercel AI SDK Docs](https://sdk.vercel.ai/docs).
+  * 📖 **Docs Tra cứu**: [Vercel AI SDK Docs](https://sdk.vercel.ai/docs) | [Next.js App Router Docs](https://nextjs.org/docs).
 * **3. Nhiệm vụ Thực hành**:
-  - Dựng giao diện Chatbot UI chuyên nghiệp với luồng Streaming Response thời gian thực kết nối với Agent Backend.
-  - 🗂️ **Mock Interview bằng Flashcards (Gemini Notebook)**: Keywords: `Next.js 15 App Router`, `Vercel AI SDK (useChat/useCompletion)`, `HTTP Streaming (SSE)`, `Generative UI & Tool Calling UI`, `FastAPI Integration`, `CORS`.
+  - Dựng ứng dụng **AI Review Summarization App & Chatbot UI** chuyên nghiệp: trích xuất structured outputs (Pros/Cons/Themes) với Zod, caching tiết kiệm chi phí với `use cache`, streaming token realtime và kết nối API với FastAPI/LangGraph Backend.
+  - 🗂️ **Mock Interview bằng Flashcards (Gemini Notebook)**: Keywords: `Next.js App Router & Server Components`, `Vercel AI SDK (generateText/generateObject/useChat)`, `Zod Structured Output`, `Directive use cache`, `Vercel AI Gateway & Model Failover`, `HTTP Streaming (SSE)`, `Generative UI & Tool Calling UI`, `FastAPI Integration`, `Vercel Deployment`.
 
 ---
 

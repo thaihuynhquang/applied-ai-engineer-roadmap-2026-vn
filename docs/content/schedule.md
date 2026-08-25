@@ -179,21 +179,22 @@
 ---
 
 ### ⚡ TUẦN 11: Open-Source LLMs (vLLM/Ollama) & Next.js AI Setup (30 Pomodoros)
-- **Nguồn tài nguyên**: [DeepLearning.AI vLLM Course](https://www.deeplearning.ai/courses/fast-and-efficient-llm-inference-with-vllm) + [freeCodeCamp Vercel AI SDK](https://www.youtube.com/watch?v=WKIjkxxNH0c) | [online_learning_guide.md#module-10](./online_learning_guide.md#-module-10-open-source-llms--high-throughput-serving-vllm--ollama)
+- **Nguồn tài nguyên**: [DeepLearning.AI vLLM Course](https://www.deeplearning.ai/courses/fast-and-efficient-llm-inference-with-vllm) + [Vercel Academy AI Summary App](https://vercel.com/academy/ai-summary-app-with-nextjs) + [freeCodeCamp Vercel AI SDK](https://www.youtube.com/watch?v=WKIjkxxNH0c) | [online_learning_guide.md#module-10](./online_learning_guide.md#-module-10-open-source-llms--high-throughput-serving-vllm--ollama)
 - **Phân bổ tiến độ**:
   - **Ngày 51 – 53 (P301 – P320)**: *Module 10: Open-Source LLMs & vLLM*:
     - Chạy Ollama Local (Llama 3.3, DeepSeek-R1).
     - Cấu hình **vLLM Server** (PagedAttention, Continuous Batching, Quantization). Kết nối LangChain LLM Client vào vLLM endpoint.
-  - **Ngày 54 – 55 (P321 – P330)**: *Module 11 Part 1: Next.js Web AI Setup*:
-    - Khởi tạo Next.js 15 App Router (TypeScript, TailwindCSS, Shadcn/ui). Setup Vercel AI SDK.
+  - **Ngày 54 – 55 (P321 – P330)**: *Module 11 Part 1: Next.js Web AI & Vercel AI SDK Foundations*:
+    - Khởi tạo Next.js App Router (TypeScript, TailwindCSS, Shadcn/ui). Setup Vercel AI SDK & Vercel AI Gateway. Text generation trong Server Components với `generateText`.
 
 ---
 
 ### 🌐 TUẦN 12: Full-Stack Web AI & Anthropic MCP Intro (30 Pomodoros)
-- **Nguồn tài nguyên**: [freeCodeCamp AI SDK](https://www.youtube.com/watch?v=WKIjkxxNH0c) + [Anthropic Intro to MCP](https://anthropic.skilljar.com/introduction-to-model-context-protocol) | [online_learning_guide.md#module-11](./online_learning_guide.md#-module-11-full-stack-web-ai-interface-nextjs--vercel-ai-sdk) | [online_learning_guide.md#module-12](./online_learning_guide.md#-module-12-tùy-chọn--optional-model-context-protocol-mcp-masterclass-anthropic-official-curriculum)
+- **Nguồn tài nguyên**: [Vercel Academy AI Summary App](https://vercel.com/academy/ai-summary-app-with-nextjs) + [freeCodeCamp AI SDK](https://www.youtube.com/watch?v=WKIjkxxNH0c) + [Anthropic Intro to MCP](https://anthropic.skilljar.com/introduction-to-model-context-protocol) | [online_learning_guide.md#module-11](./online_learning_guide.md#-module-11-full-stack-web-ai-interface-nextjs--vercel-ai-sdk) | [online_learning_guide.md#module-12](./online_learning_guide.md#-module-12-tùy-chọn--optional-model-context-protocol-mcp-masterclass-anthropic-official-curriculum)
 - **Phân bổ tiến độ**:
-  - **Ngày 56 – 58 (P331 – P347)**: *Module 11 Part 2: Streaming Chat UI & Integration*:
-    - Xây dựng Streaming Chat UI với `useChat`, HTTP Streaming (SSE), Generative UI, Tool Calling UI. Kết nối Web Frontend với FastAPI/LangGraph Backend.
+  - **Ngày 56 – 58 (P331 – P347)**: *Module 11 Part 2: Structured Outputs, Caching & Streaming Chat UI*:
+    - Trích xuất Structured Outputs với `generateObject` + Zod schema, áp dụng directive `use cache` (giảm 97% chi phí API).
+    - Xây dựng Streaming Chat UI với `useChat`, HTTP Streaming (SSE), Generative UI, Tool Calling UI. Error handling, AI Gateway failover, kết nối Frontend với FastAPI/LangGraph Backend & deploy Vercel.
   - **Ngày 59 – 60 (P348 – P360)**: *Module 12 Part 1 (Tùy chọn): Anthropic MCP Core & 3 Primitives*:
     - Kiến trúc Host/Client/Server, cơ chế JSON-RPC.
     - 3 Primitives cốt lõi: `Tools`, `Resources`, `Prompts`. Thực hành với Python SDK & **MCP Inspector**.

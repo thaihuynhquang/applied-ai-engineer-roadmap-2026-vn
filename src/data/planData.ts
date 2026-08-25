@@ -28,7 +28,7 @@ export const META_DATA: ProjectMeta = {
   hoursPerDay: 5,
   principles: [
     "Quy tắc Pomodoro 50/5/20: 50 phút Tập trung - 5 phút Nghỉ ngắn - 20 phút Nghỉ dài sau mỗi 2 Pomodoro.",
-    "Lộ trình Master Curriculum 14 Module (12 Module Cốt Lõi + 2 Module Nâng Cao Tùy Chọn): Tích hợp Khóa Packt (LangChain/LangGraph) + Udemy Docker Essentials + Các khóa học miễn phí từ Anthropic Academy, DeepLearning.AI, Hugging Face, freeCodeCamp, Vercel AI SDK, BugBytes, Async Python Playground.",
+    "Lộ trình Master Curriculum 14 Module (12 Module Cốt Lõi + 2 Module Nâng Cao Tùy Chọn): Tích hợp Khóa Packt (LangChain/LangGraph) + Udemy Docker Essentials + Các khóa học miễn phí từ Anthropic Academy, DeepLearning.AI, Hugging Face, Vercel Academy, freeCodeCamp, Vercel AI SDK, BugBytes, Async Python Playground.",
     "Hoàn thành 4 Dự án thực tế lớn: Smart Q&A Bot (Mod 1), AI Research Assistant (Mod 5), Multi-Agent System (Mod 7), Production API Cloud Render (Mod 8)."
   ],
   systemArchitecture: {
@@ -972,16 +972,18 @@ export const SPRINT_MODULES: SprintModule[] = [
   {
     id: "mod-11",
     moduleNum: 11,
-    title: "Module 11: Full-Stack Web AI Interface (Next.js 15 & Vercel AI SDK)",
-    subtitle: "Giao Diện Web AI Hiện Đại: HTTP Streaming Response (useChat), Generative UI & FastAPI Integration",
+    title: "Module 11: Full-Stack Web AI Interface (Next.js & Vercel AI SDK)",
+    subtitle: "Giao Diện Web AI Hiện Đại: Vercel AI SDK (generateText, generateObject, useChat), Zod Structured Outputs, Caching & FastAPI Integration",
     statusColor: "#6366f1",
     duration: "4.5 Ngày (27 Pomodoros / 22.5h)",
     objectives: [
-      "Khởi tạo dự án Web AI với Next.js 15 App Router, TypeScript, TailwindCSS, Shadcn/ui",
-      "Tích hợp Vercel AI SDK: Hooks (useChat, useCompletion), Streaming text & Data streams",
-      "Xây dựng Generative UI, Tool Calling UI và kết nối Next.js Frontend với FastAPI Backend"
+      "Khởi tạo dự án Web AI với Next.js App Router, Server Components, Dynamic Routes, TypeScript, TailwindCSS & Shadcn/ui",
+      "Tích hợp Vercel AI SDK: generateText, Structured Outputs (generateObject + Zod schemas) và Streaming Hooks (useChat, useCompletion)",
+      "Tối ưu chi phí với directive 'use cache' (tiết kiệm tới 97%), cấu hình Vercel AI Gateway, automatic failovers và logging",
+      "Xây dựng Generative UI, Tool Calling UI và kết nối Next.js Frontend với FastAPI/LangGraph Backend, deploy lên Vercel"
     ],
     knowledgeToLoad: [
+      "Vercel Academy: Creating an AI Summary App with Next.js (Eve Porcello)",
       "freeCodeCamp Course: Build a Support Agent with Vercel AI SDK",
       "Developers Digest Tutorial: Agents 101 (Next.js + Vercel AI Gateway + CI/CD)",
       "Vercel AI SDK Documentation"
@@ -989,30 +991,39 @@ export const SPRINT_MODULES: SprintModule[] = [
     deliverables: [
       {
         id: "m11-t1",
-        title: "Khởi tạo Next.js 15 App Router & Vercel AI SDK Setup",
-        description: "Dựng khung ứng dụng Next.js 15, cài đặt Vercel AI SDK, TailwindCSS & Shadcn/ui.",
+        title: "Khởi tạo Next.js App Router, Vercel AI SDK & AI Gateway Setup",
+        description: "Dựng khung ứng dụng Next.js, Server Components, cấu hình Vercel AI Gateway, API keys, TypeScript & Tailwind CSS.",
         hoursEstimate: 6.7,
         pomodoros: 8,
-        tags: ["Nextjs15", "VercelAISDK", "Frontend"]
+        tags: ["Nextjs", "VercelAISDK", "AIGateway", "Frontend"]
       },
       {
         id: "m11-t2",
-        title: "Xây dựng Streaming Chat UI với useChat & SSE",
-        description: "Tạo giao diện Chatbot hỗ trợ phản hồi realtime dạng streaming token-by-token.",
+        title: "AI Summary App: Structured Outputs (Zod) & Smart Caching (use cache)",
+        description: "Trích xuất structured outputs (Pros/Cons/Themes) với generateObject + Zod, áp dụng directive 'use cache' giảm chi phí và prompt engineering.",
         hoursEstimate: 7.5,
         pomodoros: 9,
-        tags: ["useChat", "Streaming", "SSE"]
+        tags: ["generateObject", "Zod", "useCache", "PromptEngineering"]
       },
       {
         id: "m11-t3",
-        title: "Thiết kế Generative UI, Tool Calling UI & Đấu nối FastAPI Backend",
-        description: "Dựng giao diện Generative UI render dynamic components và đấu nối API với FastAPI/LangGraph.",
+        title: "Streaming Chat UI (useChat), Generative UI, Failover & Đấu nối FastAPI",
+        description: "Dựng giao diện Chatbot streaming token realtime, Generative UI, graceful error handling/failovers, đấu nối FastAPI và deploy Vercel.",
         hoursEstimate: 8.3,
         pomodoros: 10,
-        tags: ["GenerativeUI", "FastAPI", "FullStack"]
+        tags: ["useChat", "Streaming", "GenerativeUI", "FastAPI", "VercelDeploy"]
       }
     ],
     resources: [
+      {
+        id: "res-m11-0",
+        title: "Vercel Academy: Creating an AI Summary App with Next.js",
+        type: "course",
+        description: "Khóa học chính thức từ Vercel Academy (Eve Porcello): Xây dựng, tối ưu chi phí (use cache), structured outputs (Zod) và deploy AI app với Next.js & Vercel AI SDK.",
+        url: "https://vercel.com/academy/ai-summary-app-with-nextjs",
+        moduleId: "mod-11",
+        isFree: true
+      },
       {
         id: "res-m11-1",
         title: "freeCodeCamp: Build Support Agent with Vercel AI SDK",
@@ -1275,14 +1286,14 @@ export const generateDailySchedule = (): DailyScheduleDay[] => {
       "Module 10: Chạy Ollama Local (Llama 3.3, DeepSeek-R1)",
       "Module 10: Cấu hình vLLM Server (PagedAttention, Continuous Batching, Quantization)",
       "Module 10: Kết nối LangChain LLM Client & smolagents vào vLLM endpoint",
-      "Module 11 Part 1: Khởi tạo Next.js 15 App Router (TypeScript, Tailwind, Shadcn/ui)",
-      "Module 11 Part 1: Setup Vercel AI SDK (useChat, useCompletion)"
+      "Module 11 Part 1: Khởi tạo Next.js App Router (TypeScript, Tailwind, Shadcn/ui & AI Gateway)",
+      "Module 11 Part 1: Vercel AI SDK Foundations (generateText trong Server Components)"
     ],
     // Week 12 (Module 11 Part 2: Full-Stack Web AI & Module 12 Part 1: Anthropic MCP Core)
     [
-      "Module 11 Part 2: Streaming Chat UI với useChat & HTTP Streaming (SSE)",
-      "Module 11 Part 2: Generative UI, Tool Calling UI & Đấu nối Next.js với FastAPI",
-      "Module 11 Part 2: CORS, Error Handling & Web UI Polish",
+      "Module 11 Part 2: Structured Outputs với generateObject, Zod & Smart Caching (use cache)",
+      "Module 11 Part 2: Streaming Chat UI (useChat), Generative UI & Đấu nối Next.js với FastAPI",
+      "Module 11 Part 2: Error Handling, AI Gateway Failovers & Vercel Production Deploy",
       "Module 12 Part 1 (Tùy chọn): Anthropic MCP Core - Host/Client/Server & JSON-RPC",
       "Module 12 Part 1 (Tùy chọn): 3 Primitives (Tools, Resources, Prompts) & MCP Inspector"
     ],

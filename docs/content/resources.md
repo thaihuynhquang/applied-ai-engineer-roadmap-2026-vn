@@ -78,8 +78,9 @@ Tổng hợp bài giảng video và tài liệu tra cứu chính thức theo cá
 ---
 
 ### 🌐 Module 11: Full-Stack Web AI Interface (Next.js & Vercel AI SDK)
+* 🎓 **Vercel Academy Official Course**: [Creating an AI Summary App with Next.js](https://vercel.com/academy/ai-summary-app-with-nextjs) (Eve Porcello — Next.js 16, Vercel AI SDK `generateText`/`generateObject`, Zod, directive `use cache`, AI Gateway & Vercel Deploy)
 * 🆓 **Free Course**: [freeCodeCamp: Build Support Agent with Vercel AI SDK](https://www.youtube.com/watch?v=WKIjkxxNH0c) | [Developers Digest: Agents 101 Tutorial](https://www.developersdigest.tech/tutorials/eWs50bhFvMY)
-* 📖 **Docs**: [Vercel AI SDK Documentation](https://sdk.vercel.ai/docs)
+* 📖 **Docs**: [Vercel AI SDK Documentation](https://sdk.vercel.ai/docs) | [Next.js Documentation](https://nextjs.org/docs)
 
 ---
 
