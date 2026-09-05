@@ -57,7 +57,13 @@ export class RoadmapViewRoadmap extends HTMLElement {
                   <!-- Objectives & Knowledge -->
                   <div class="roadmap-summary-box">
                     <div class="roadmap-summary-title">
-                      ${ICONS.gradCap} Mục tiêu kiến thức & Kỹ năng nạp:
+                      ${ICONS.gradCap} Mục tiêu:
+                    </div>
+                    <ul class="roadmap-summary-list">
+                      ${sprint.objectives.map((o) => `<li>• ${o}</li>`).join('')}
+                    </ul>
+                    <div class="roadmap-summary-title roadmap-summary-title--secondary">
+                      ${ICONS.laptop} Kỹ năng nạp:
                     </div>
                     <ul class="roadmap-summary-list">
                       ${sprint.knowledgeToLoad.map((k) => `<li>• ${k}</li>`).join('')}

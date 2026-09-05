@@ -32,24 +32,6 @@ export interface SprintModule {
   resources: ResourceItem[];
 }
 
-export interface PomodoroSlot {
-  id: string;
-  pomIndex: number; // 1 to 6
-  timeSlot: string;
-  period: 'afternoon' | 'evening';
-  label: string;
-  details: string;
-}
-
-export interface DailyScheduleDay {
-  id: string;
-  weekNum: number; // 1 to 5
-  dayNum: number; // 1 to 5 (Mon-Fri)
-  dayName: string; // e.g. "Thứ 2"
-  theme: string; // e.g. "Setup & Core Prompting"
-  poms: PomodoroSlot[];
-}
-
 export interface TechStackLayer {
   layerNum: number;
   name: string;

@@ -1060,6 +1060,10 @@
     gap: 0.4rem;
   }
 
+  .roadmap-summary-title--secondary {
+    margin-top: 0.85rem;
+  }
+
   .roadmap-summary-list {
     display: flex;
     flex-direction: column;
