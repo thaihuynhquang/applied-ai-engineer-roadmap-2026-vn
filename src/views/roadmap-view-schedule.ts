@@ -272,6 +272,11 @@ export class RoadmapViewSchedule extends HTMLElement {
     const todayMinutes = todaySessions.reduce((acc, s) => acc + s.durationMinutes, 0);
     const totalAccumulatedPoms = sessions.length;
 
+    const locale = state.lang === 'en' ? 'en-US' : 'vi-VN';
+    const todayHoursStr = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(
+      todayMinutes / 60
+    );
+
     // SVG Ring calculations
     const radius = 120;
     const circumference = 2 * Math.PI * radius;
@@ -446,7 +451,7 @@ export class RoadmapViewSchedule extends HTMLElement {
             </div>
             <div class="metric-info">
               <span class="metric-value">${todayMinutes}m</span>
-              <span class="metric-label">${t('schedule.metric.todayHours', { hours: (todayMinutes / 60).toFixed(1) })}</span>
+              <span class="metric-label">${t('schedule.metric.todayHours', { hours: todayHoursStr })}</span>
             </div>
           </div>
 
@@ -484,10 +489,10 @@ export class RoadmapViewSchedule extends HTMLElement {
                     .slice(0, 5)
                     .map((s) => {
                       const d = new Date(s.timestamp);
-                      const timeStr = `${d.getHours().toString().padStart(2, '0')}:${d
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, '0')} (${d.getDate()}/${d.getMonth() + 1})`;
+                      const timeStr = `${d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} (${d.toLocaleDateString(
+                        locale,
+                        { day: 'numeric', month: 'numeric' }
+                      )})`;
                       // Resolve against the active language bundle first so old sessions
                       // don't stay stuck in the language they were logged in.
                       const liveTaskTitle = s.taskId ? allTasks.find((at) => at.id === s.taskId)?.title : undefined;
