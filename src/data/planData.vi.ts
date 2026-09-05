@@ -955,7 +955,7 @@ export const SPRINT_MODULES: SprintModule[] = [
     id: "mod-11",
     moduleNum: 11,
     title: "Module 11: Full-Stack Web AI Interface (Next.js & Vercel AI SDK)",
-    subtitle: "Giao Diện Web AI Hiện Đại: Vercel AI SDK (generateText, generateObject, useChat), Zod Structured Outputs, Caching & FastAPI Integration",
+    subtitle: "Giao Diện Web AI Hiện Đại: Vercel AI SDK, Zod Structured Outputs, Caching & FastAPI Integration",
     statusColor: "#6366f1",
     duration: "4.5 Ngày (27 Pomodoros / 22.5h)",
     objectives: [
