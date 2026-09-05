@@ -2,6 +2,7 @@ import { SPRINT_MODULES } from '../data/planData';
 import { getState, toggleChecked } from '../state/storage';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
 import { ICONS } from '../utils/icons';
+import { t } from '../i18n';
 
 export class RoadmapViewRoadmap extends HTMLElement {
   private boundRefresh = this.refresh.bind(this);
@@ -23,10 +24,10 @@ export class RoadmapViewRoadmap extends HTMLElement {
         <div class="section-header section-header--margin">
           <div>
             <div class="section-title section-title-flex">
-              ${ICONS.roadmap} Lộ Trình Chi Tiết ${SPRINT_MODULES.length} Master Modules (Deliverables & Tasks)
+              ${ICONS.roadmap} ${t('roadmap.header.title', { count: SPRINT_MODULES.length })}
             </div>
             <div class="section-subtitle-muted">
-              Tích chọn từng nhiệm vụ thực hành khi bạn hoàn thành code & test thành công.
+              ${t('roadmap.header.subtitle')}
             </div>
           </div>
         </div>
@@ -57,13 +58,13 @@ export class RoadmapViewRoadmap extends HTMLElement {
                   <!-- Objectives & Knowledge -->
                   <div class="roadmap-summary-box">
                     <div class="roadmap-summary-title">
-                      ${ICONS.gradCap} Mục tiêu:
+                      ${ICONS.gradCap} ${t('roadmap.objectives.title')}
                     </div>
                     <ul class="roadmap-summary-list">
                       ${sprint.objectives.map((o) => `<li>• ${o}</li>`).join('')}
                     </ul>
                     <div class="roadmap-summary-title roadmap-summary-title--secondary">
-                      ${ICONS.laptop} Kỹ năng nạp:
+                      ${ICONS.laptop} ${t('roadmap.knowledge.title')}
                     </div>
                     <ul class="roadmap-summary-list">
                       ${sprint.knowledgeToLoad.map((k) => `<li>• ${k}</li>`).join('')}
@@ -72,7 +73,7 @@ export class RoadmapViewRoadmap extends HTMLElement {
 
                   <!-- Tasks Checklist -->
                   <div class="roadmap-deliverables-heading">
-                    ${ICONS.laptop} Nhiệm Vụ Thực Hành (Deliverables):
+                    ${ICONS.laptop} ${t('roadmap.deliverables.title')}
                   </div>
 
                   <div class="task-list">

@@ -94,6 +94,7 @@ export interface AppState {
   resourceFlags: Record<string, boolean>;
   activeTab: string;
   theme: 'dark' | 'light';
+  lang: 'vi' | 'en';
   pomodoroSettings?: PomodoroTimerSettings;
   pomodoroSessions?: PomodoroSessionLog[];
 }

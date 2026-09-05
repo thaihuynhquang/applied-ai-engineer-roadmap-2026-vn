@@ -1,5 +1,5 @@
 import { AppState, PomodoroSessionLog, PomodoroTimerSettings } from '../types/appState';
-import { STORAGE_KEY, THEME_KEY, ROUTE_IDS } from '../constants';
+import { STORAGE_KEY, THEME_KEY, LANG_KEY, ROUTE_IDS } from '../constants';
 import { renderAll } from '../renderer';
 
 export const DEFAULT_POMODORO_SETTINGS: PomodoroTimerSettings = {
@@ -17,6 +17,7 @@ const defaultState: AppState = {
   resourceFlags: {},
   activeTab: ROUTE_IDS.DASHBOARD,
   theme: 'dark',
+  lang: 'vi',
   pomodoroSettings: { ...DEFAULT_POMODORO_SETTINGS },
   pomodoroSessions: [],
 };
@@ -31,9 +32,14 @@ export const getInitialTheme = (): 'dark' | 'light' => {
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 };
 
+export const getInitialLang = (): 'vi' | 'en' => {
+  const savedLang = localStorage.getItem(LANG_KEY);
+  return savedLang === 'en' ? 'en' : 'vi';
+};
+
 export const normalizeState = (raw: Partial<AppState> | null): AppState => {
   if (!raw || typeof raw !== 'object') {
-    return { ...defaultState, theme: getInitialTheme() };
+    return { ...defaultState, theme: getInitialTheme(), lang: getInitialLang() };
   }
 
   return {
@@ -41,6 +47,7 @@ export const normalizeState = (raw: Partial<AppState> | null): AppState => {
     resourceFlags: raw.resourceFlags && typeof raw.resourceFlags === 'object' ? raw.resourceFlags : {},
     activeTab: raw.activeTab && typeof raw.activeTab === 'string' ? raw.activeTab : ROUTE_IDS.DASHBOARD,
     theme: raw.theme === 'light' || raw.theme === 'dark' ? raw.theme : getInitialTheme(),
+    lang: raw.lang === 'en' || raw.lang === 'vi' ? raw.lang : getInitialLang(),
     pomodoroSettings: raw.pomodoroSettings
       ? { ...DEFAULT_POMODORO_SETTINGS, ...raw.pomodoroSettings }
       : { ...DEFAULT_POMODORO_SETTINGS },
@@ -69,6 +76,7 @@ export const saveState = (): void => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     localStorage.setItem(THEME_KEY, state.theme);
+    localStorage.setItem(LANG_KEY, state.lang);
   } catch (err) {
     console.error('Failed to save state to localStorage', err);
   }
@@ -102,6 +110,13 @@ export const setActiveTabState = (tabId: string): void => {
 export const setThemeState = (theme: 'dark' | 'light'): void => {
   state.theme = theme;
   document.documentElement.setAttribute('data-theme', theme);
+  saveState();
+  renderAll();
+};
+
+export const setLangState = (lang: 'vi' | 'en'): void => {
+  state.lang = lang;
+  document.documentElement.setAttribute('lang', lang);
   saveState();
   renderAll();
 };
@@ -150,6 +165,7 @@ export const updatePomodoroSettings = (newSettings: Partial<PomodoroTimerSetting
 export const importState = (newState: Partial<AppState>): void => {
   state = normalizeState(newState);
   document.documentElement.setAttribute('data-theme', state.theme);
+  document.documentElement.setAttribute('lang', state.lang);
   saveState();
   renderAll();
 };
