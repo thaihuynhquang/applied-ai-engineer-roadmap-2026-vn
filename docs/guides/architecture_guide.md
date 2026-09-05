@@ -9,8 +9,9 @@ This document summarizes the complete technical architecture, technology stack, 
 The application is a **Single Page Application (SPA)** designed for tracking learning progress and practice tasks (Roadmap & Sprint Journey Tracker).
 
 - **Core Philosophy**: Lightweight, zero-framework runtime overhead, ultra-fast, modularized using **Vanilla TypeScript** combined with **Custom Elements (Web Components - Light DOM)** and **Layered Vanilla CSS**.
-- **Data-Driven Architecture**: 100% of business content data (Sprints, Modules, Tasks, Deliverables, Schedule, Resources, Tech Stack) is completely decoupled in `src/data/planData.ts`. The UI layer strictly reads data and renders views.
-- **Centralized State Store & Client-side Persistence**: Centralized state management in `src/state/storage.ts`. User progress, theme preference, and Pomodoro session logs are automatically persisted to `localStorage`, with built-in JSON Import/Export support for backups.
+- **Data-Driven Architecture**: 100% of business content data (Sprints, Modules, Tasks, Deliverables, Resources, Tech Stack, Quit Criteria) is completely decoupled into `src/data/planData.vi.ts` / `planData.en.ts`, one file per language with identical `id`s. `src/data/planData.ts` is a thin facade selecting the active bundle by `state.lang`. The UI layer strictly reads data through that facade and renders views.
+- **Centralized State Store & Client-side Persistence**: Centralized state management in `src/state/storage.ts`. User progress, theme preference, language preference, and Pomodoro session logs are automatically persisted to `localStorage`, with built-in JSON Import/Export support for backups.
+- **i18n**: Vietnamese/English UI chrome is driven by `src/i18n/` (`t()`/`plural()` string lookup + a `data-i18n` DOM sweep for the static header markup); curriculum content is the two `planData.*.ts` files above.
 - **Observer-Driven Reactive Loop**: Automatic state synchronization between the State Store and active Custom Elements without requiring a Virtual DOM or external reactive libraries.
 - **Integrated Pomodoro Engine**: Interactive Pomodoro countdown timer with Web Audio API sound synthesis and browser push notifications.
 
@@ -38,8 +39,9 @@ A detailed directory tree diagram and description of each module/file is documen
 ### High-level Overview of Main Modules:
 - **`docs/`**: Technical guides (`docs/guides/`) and web page content documents (`docs/content/`).
 - **`public/`**: Static assets (`favicon.svg`).
-- **`src/data/`**: Pure Data Model (`planData.ts`) - Contains 100% of static business data.
+- **`src/data/`**: Pure Data Model (`planData.vi.ts` / `planData.en.ts` + the `planData.ts` facade) - Contains 100% of static business data, one file per language.
 - **`src/state/`**: State Store (`storage.ts`) - Manages `localStorage` & singleton `AppState`.
+- **`src/i18n/`**: UI string table (`strings.ts`), `t()`/`plural()` lookup (`index.ts`), and the static-header DOM sweep (`dom.ts`).
 - **`src/views/`**: Native Web Components (`<roadmap-view-*>`) managing the 6 UI tabs (Dashboard, Roadmap, Schedule, Resources, Tech Stack, Quit Criteria).
 - **`src/styles/`**: Layered CSS system (`@layer`) combined with CSS Custom Properties (`_tokens.css`).
 - **`src/actions/`**, **`src/utils/`**, **`src/types/`**: Pure utilities, type interfaces, and backup/restore handlers.
@@ -49,9 +51,9 @@ A detailed directory tree diagram and description of each module/file is documen
 ## 4. Core Design Patterns & Architecture Principles
 
 ### Pattern 1: Data-Driven UI Architecture
-- **Principle**: Decouple 100% of business data from the UI layer. Static data resides in `src/data/planData.ts`.
-- **Primary Key Constraint**: Every Task, Resource, or Schedule slot **MUST** have a unique static `id` (e.g., `s1-t1`, `res-1`, `w1d1-p1`).
-- **Critical Warning for AI Agents**: Never rename or modify existing item `id`s in `planData.ts` because `id` serves as the primary key for persisting user completion state in `localStorage`.
+- **Principle**: Decouple 100% of business data from the UI layer. Static data resides in `src/data/planData.vi.ts` / `planData.en.ts`, read through the `src/data/planData.ts` facade (`getSprintModules()`, `getMetaData()`, `getTechStackLayers()`, `getQuitCriteriaData()`) rather than imported directly, so a language switch repaints with the correct bundle.
+- **Primary Key Constraint**: Every Task, Resource, or Sprint Module **MUST** have a unique static `id` (e.g., `m1-t1`, `res-m1-1`, `mod-1`), and that `id` **MUST be identical in both language files**.
+- **Critical Warning for AI Agents**: Never rename or modify existing item `id`s because `id` serves as the primary key for persisting user completion state in `localStorage`. When adding or editing curriculum content, edit both `planData.vi.ts` and `planData.en.ts` together — a dev-only check in `planData.ts` logs a console error if their `id` sets ever diverge.
 
 ### Pattern 2: Light-DOM Custom Elements Pattern & Lifecycle Management
 Views directly utilize the browser's native **Custom Elements API**:
@@ -151,13 +153,14 @@ If you are an AI Agent tasked with building a new repository for a different sub
 3. Create `vite.config.ts` specifying `base: './'` to ensure static assets resolve correctly on GitHub Pages (See **[github_pages_deployment_guide.md](./github_pages_deployment_guide.md)**).
 
 ### Step 2: Build Core Types & State Store
-1. Create `src/types/appState.ts` defining interfaces for data models and `AppState` (`checked`, `resourceFlags`, `activeTab`, `theme`, `pomodoroSettings`, `pomodoroSessions`).
-2. Create `src/constants.ts` holding `STORAGE_KEY`, `THEME_KEY`, and `ROUTE_IDS`.
-3. Create `src/state/storage.ts` managing singleton `AppState`, providing `loadState()`, `saveState()`, `setThemeState()`, and `addPomodoroSession()`.
+1. Create `src/types/appState.ts` defining interfaces for data models and `AppState` (`checked`, `resourceFlags`, `activeTab`, `theme`, `lang`, `pomodoroSettings`, `pomodoroSessions`).
+2. Create `src/constants.ts` holding `STORAGE_KEY`, `THEME_KEY`, `LANG_KEY`, and `ROUTE_IDS`.
+3. Create `src/state/storage.ts` managing singleton `AppState`, providing `loadState()`, `saveState()`, `setThemeState()`, `setLangState()`, and `addPomodoroSession()`.
 
-### Step 3: Define New Data Model (`src/data/planData.ts`)
-1. Structure business data following standard schemas: `META_DATA`, `SPRINT_MODULES`, `POMODORO_SCHEDULE`, `FREE_RESOURCES`, `TECH_STACK_LAYERS`.
-2. Assign unique static IDs to all tasks, resources, and schedule slots (As specified in **[architecture_guide.md](./architecture_guide.md)**).
+### Step 3: Define New Data Model (`src/data/planData.<lang>.ts`)
+1. Structure business data following standard schemas: `META_DATA`, `SPRINT_MODULES`, `FREE_RESOURCES`, `TECH_STACK_LAYERS`, `QUIT_CRITERIA_DATA` — one file per supported language, plus a thin `planData.ts` facade that picks a bundle by `state.lang`. Single-language projects can skip the facade and split.
+2. Assign unique static IDs to all tasks and resources, identical across every language file (As specified in **[architecture_guide.md](./architecture_guide.md)**).
+3. If supporting multiple languages, also add `src/i18n/` (a `UI_STRINGS` table + `t()` lookup) for UI chrome text that isn't part of the data model.
 
 ### Step 4: Build Domain Progress Engine (`src/progress.ts`)
 1. Implement pure function `calculateProgress()` utilizing `state.checked`, `state.pomodoroSessions`, and `PLAN_DATA`.
@@ -191,6 +194,6 @@ If you are an AI Agent tasked with building a new repository for a different sub
 - [ ] `npm run build` generates the `dist/` directory using relative asset paths (`./assets/...`).
 - [ ] `.github/workflows/deploy.yml` automatically builds and deploys the app to GitHub Pages successfully.
 - [ ] Toggling task checkboxes immediately updates progress percentages on Dashboard and Navigation Badge.
-- [ ] Reloading the page (F5) preserves checked tasks, theme settings, and active tab state.
+- [ ] Reloading the page (F5) preserves checked tasks, theme settings, language preference, and active tab state.
 - [ ] Pomodoro timer runs smoothly, plays alert audio on completion, and records session history.
 - [ ] Export JSON downloads a valid backup file, and Import JSON accurately restores application state.

@@ -82,7 +82,7 @@ src/styles/
 - **Layout**: Flexbox space-between (`justify-content: space-between`), padding `0.85rem 1.5rem`.
 - **Children**:
   - `header-brand`: 38x38px gradient Logo block + Brand Title ("Applied AI Engineer Roadmap 2026") and Subtitle ("Enterprise Knowledge AI Assistant").
-  - `header-actions`: Quick action button group (`.action-btn` Export, Import, `.action-btn-danger` Reset) and Theme Toggle button (`.theme-toggle-btn`).
+  - `header-actions`: Quick action button group (`.action-btn` Export, Import, `.action-btn-danger` Reset), Language Toggle button (`.lang-toggle-btn`, shows the language you'd switch *to*), and Theme Toggle button (`.theme-toggle-btn`).
 
 ### 3.2. Navigation Tab Bar Component (`.nav-tabs-container`, `.nav-tab`)
 - **Position**: Directly below Header Bar (`border-bottom: 1px solid var(--border-color)`).

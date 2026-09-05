@@ -32,24 +32,6 @@ export interface SprintModule {
   resources: ResourceItem[];
 }
 
-export interface PomodoroSlot {
-  id: string;
-  pomIndex: number; // 1 to 6
-  timeSlot: string;
-  period: 'afternoon' | 'evening';
-  label: string;
-  details: string;
-}
-
-export interface DailyScheduleDay {
-  id: string;
-  weekNum: number; // 1 to 5
-  dayNum: number; // 1 to 5 (Mon-Fri)
-  dayName: string; // e.g. "Thứ 2"
-  theme: string; // e.g. "Setup & Core Prompting"
-  poms: PomodoroSlot[];
-}
-
 export interface TechStackLayer {
   layerNum: number;
   name: string;
@@ -107,11 +89,37 @@ export interface QuitCriteriaData {
   decisionMatrix: ModuleQuitRule[];
 }
 
+export interface ProjectMeta {
+  title: string;
+  subtitle: string;
+  targetProject: string;
+  totalWeeks: number;
+  totalPomodoros: number;
+  totalHours: number;
+  hoursPerDay: number;
+  principles: string[];
+  systemArchitecture: {
+    frontend: string;
+    backend: string;
+    database: string;
+    llms: string;
+    observability: string;
+  };
+}
+
+export interface PlanDataBundle {
+  META_DATA: ProjectMeta;
+  SPRINT_MODULES: SprintModule[];
+  TECH_STACK_LAYERS: TechStackLayer[];
+  QUIT_CRITERIA_DATA: QuitCriteriaData;
+}
+
 export interface AppState {
   checked: Record<string, boolean>;
   resourceFlags: Record<string, boolean>;
   activeTab: string;
   theme: 'dark' | 'light';
+  lang: 'vi' | 'en';
   pomodoroSettings?: PomodoroTimerSettings;
   pomodoroSessions?: PomodoroSessionLog[];
 }

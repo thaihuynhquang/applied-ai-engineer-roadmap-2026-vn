@@ -1,6 +1,7 @@
-import { TECH_STACK_LAYERS } from '../data/planData';
+import { getTechStackLayers } from '../data/planData';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
 import { ICONS } from '../utils/icons';
+import { t } from '../i18n';
 
 export class RoadmapViewTechstack extends HTMLElement {
   private boundRefresh = this.refresh.bind(this);
@@ -15,15 +16,16 @@ export class RoadmapViewTechstack extends HTMLElement {
   }
 
   refresh(): void {
+    const TECH_STACK_LAYERS = getTechStackLayers();
     this.innerHTML = `
       <div class="techstack-container">
         <div class="section-header">
           <div>
             <div class="section-title section-title-flex">
-              ${ICONS.cpu} Báo Cáo Chuyên Sâu: AI Application Tech Stack 2026
+              ${ICONS.cpu} ${t('techstack.header.title')}
             </div>
             <div class="section-subtitle-muted">
-              Bức tranh công nghệ chuẩn mực phát triển ứng dụng AI từ PoC/MVP đến Production.
+              ${t('techstack.header.subtitle')}
             </div>
           </div>
         </div>
@@ -32,36 +34,36 @@ export class RoadmapViewTechstack extends HTMLElement {
         <div class="techstack-grid">
           <div class="progress-card progress-card--top-primary">
             <div class="roadmap-summary-title">
-              ${ICONS.layers} Architecture A: Modern Full-Stack AI Web App (SaaS Product)
+              ${ICONS.layers} ${t('techstack.archA.title')}
             </div>
             <div class="progress-card-desc--lineheight">
-              • <b>Frontend:</b> Next.js (TypeScript) + TailwindCSS + Shadcn/ui + Vercel AI SDK.<br/>
-              • <b>Backend:</b> Python FastAPI Server.<br/>
-              • <b>Agent Orchestration:</b> LangGraph StateGraph + MCP Protocol.<br/>
-              • <b>LLM Models:</b> Anthropic Claude 3.5/3.7 + DeepSeek-R1.<br/>
-              • <b>Database:</b> PostgreSQL với pgvector (Hybrid Search).<br/>
-              • <b>Observability:</b> LangSmith / Langfuse Tracing.
+              • ${t('techstack.archA.bullet1')}<br/>
+              • ${t('techstack.archA.bullet2')}<br/>
+              • ${t('techstack.archA.bullet3')}<br/>
+              • ${t('techstack.archA.bullet4')}<br/>
+              • ${t('techstack.archA.bullet5')}<br/>
+              • ${t('techstack.archA.bullet6')}
             </div>
           </div>
 
           <div class="progress-card progress-card--top-emerald">
             <div class="progress-card-header-title--emerald">
-              ${ICONS.shield} Architecture B: Enterprise Private AI Stack (Bảo Mật Nội Bộ)
+              ${ICONS.shield} ${t('techstack.archB.title')}
             </div>
             <div class="progress-card-desc--lineheight">
-              • <b>Serving Layer:</b> vLLM Cluster (Chạy trên On-Premise GPU).<br/>
-              • <b>Open-Source Model:</b> Llama 3.3 70B / DeepSeek-V3.<br/>
-              • <b>Vector DB:</b> Qdrant hoặc Milvus (Rust/Go engine).<br/>
-              • <b>Orchestration:</b> LangGraph + FastMCP Server.<br/>
-              • <b>Document Parsing:</b> Docling / Unstructured.io.<br/>
-              • <b>Observability:</b> Langfuse Self-hosted (Docker).
+              • ${t('techstack.archB.bullet1')}<br/>
+              • ${t('techstack.archB.bullet2')}<br/>
+              • ${t('techstack.archB.bullet3')}<br/>
+              • ${t('techstack.archB.bullet4')}<br/>
+              • ${t('techstack.archB.bullet5')}<br/>
+              • ${t('techstack.archB.bullet6')}
             </div>
           </div>
         </div>
 
         <!-- 7 Layers Breakdown -->
         <div class="techstack-heading">
-          ${ICONS.cpu} Chi Tiết 7 Tầng Hệ Sinh Thái AI (7-Layer Ecosystem)
+          ${ICONS.cpu} ${t('techstack.layers.heading')}
         </div>
 
         ${TECH_STACK_LAYERS.map(
@@ -74,9 +76,9 @@ export class RoadmapViewTechstack extends HTMLElement {
               <table class="tech-table">
                 <thead>
                   <tr>
-                    <th>Công nghệ</th>
-                    <th>Vai trò trong hệ thống</th>
-                    <th>Xu hướng / Thị phần</th>
+                    <th>${t('techstack.table.tech')}</th>
+                    <th>${t('techstack.table.role')}</th>
+                    <th>${t('techstack.table.trend')}</th>
                   </tr>
                 </thead>
                 <tbody>

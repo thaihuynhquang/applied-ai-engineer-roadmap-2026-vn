@@ -1,4 +1,4 @@
-import { SPRINT_MODULES, META_DATA } from '../data/planData';
+import { getSprintModules, getMetaData } from '../data/planData';
 import {
   getState,
   addPomodoroSession,
@@ -12,6 +12,7 @@ import { requestNotificationPermission, sendWebNotification } from '../utils/not
 import { showToast } from '../toast';
 import { Task } from '../types/appState';
 import { ICONS } from '../utils/icons';
+import { t, plural } from '../i18n';
 
 type TimerMode = 'focus' | 'shortBreak' | 'longBreak';
 
@@ -32,10 +33,10 @@ const formatTime = (secs: number): string => {
 
 const updateDocumentTitle = () => {
   if (isRunning) {
-    const modeLabel = timerMode === 'focus' ? '🎯 Focus' : '☕ Break';
-    document.title = `(${formatTime(secondsRemaining)}) ${modeLabel} - AI Engineer Roadmap`;
+    const modeLabel = timerMode === 'focus' ? t('schedule.docTitleMode.focus') : t('schedule.docTitleMode.break');
+    document.title = t('schedule.docTitleRunning', { time: formatTime(secondsRemaining), mode: modeLabel });
   } else {
-    document.title = 'AI Engineer LangChain Roadmap 2026 - Tracker';
+    document.title = t('meta.title');
   }
 };
 
@@ -158,16 +159,17 @@ export class RoadmapViewSchedule extends HTMLElement {
 
   private onTimerComplete(): void {
     stopTimerInterval();
+    const SPRINT_MODULES = getSprintModules();
     const settings = getState().pomodoroSettings || DEFAULT_POMODORO_SETTINGS;
 
     if (timerMode === 'focus') {
       if (settings.soundEnabled) playSessionCompleteSound();
       if (settings.notificationEnabled) {
-        sendWebNotification('🎉 Hoàn thành phiên Pomodoro!', {
-          body: 'Tuyệt vời! Đã cộng +1 Pomodoro vào tiến độ tích lũy.',
+        sendWebNotification(t('schedule.notif.focusDone.title'), {
+          body: t('schedule.notif.focusDone.body'),
         });
       }
-      showToast('🎉 Hoàn thành phiên Pomodoro! (+1 điểm tích lũy)', 'success');
+      showToast(t('schedule.toast.focusDone'), 'success');
 
       // Find task info if selected
       let taskTitle = '';
@@ -212,11 +214,11 @@ export class RoadmapViewSchedule extends HTMLElement {
       // Break complete
       if (settings.soundEnabled) playBreakCompleteSound();
       if (settings.notificationEnabled) {
-        sendWebNotification('☕ Hết giờ nghỉ!', {
-          body: 'Sẵn sàng cho phiên tập trung tiếp theo.',
+        sendWebNotification(t('schedule.notif.breakDone.title'), {
+          body: t('schedule.notif.breakDone.body'),
         });
       }
-      showToast('☕ Hết giờ nghỉ! Sẵn sàng cho phiên tập trung mới.', 'info');
+      showToast(t('schedule.toast.breakDone'), 'info');
 
       timerMode = 'focus';
       secondsRemaining = settings.focusDuration * 60;
@@ -245,6 +247,8 @@ export class RoadmapViewSchedule extends HTMLElement {
   }
 
   refresh(): void {
+    const SPRINT_MODULES = getSprintModules();
+    const META_DATA = getMetaData();
     const state = getState();
     const settings = state.pomodoroSettings || DEFAULT_POMODORO_SETTINGS;
     const sessions = state.pomodoroSessions || [];
@@ -267,6 +271,11 @@ export class RoadmapViewSchedule extends HTMLElement {
     const todaySessions = sessions.filter((s) => s.timestamp >= startOfToday.getTime());
     const todayMinutes = todaySessions.reduce((acc, s) => acc + s.durationMinutes, 0);
     const totalAccumulatedPoms = sessions.length;
+
+    const locale = state.lang === 'en' ? 'en-US' : 'vi-VN';
+    const todayHoursStr = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(
+      todayMinutes / 60
+    );
 
     // SVG Ring calculations
     const radius = 120;
@@ -333,7 +342,7 @@ export class RoadmapViewSchedule extends HTMLElement {
                 />
               </div>
               <button class="action-btn btn-apply-custom" id="btn-apply-custom">
-                Áp dụng
+                ${t('schedule.custom.apply')}
               </button>
             </div>
           `
@@ -343,7 +352,7 @@ export class RoadmapViewSchedule extends HTMLElement {
           <!-- Roadmap Task Selector -->
           <div class="task-selector-wrapper">
             <select id="task-select-dropdown" class="task-select-dropdown">
-              <option value="">Tập trung tự do (General Focus)</option>
+              <option value="">${t('schedule.task.freeFocus')}</option>
               ${allTasks
                 .map(
                   (t) => `
@@ -384,10 +393,10 @@ export class RoadmapViewSchedule extends HTMLElement {
               <div class="timer-status-badge">
                 ${
                   timerMode === 'focus'
-                    ? 'TẬP TRUNG'
+                    ? t('schedule.status.focus')
                     : timerMode === 'shortBreak'
-                    ? 'NGHỈ NGẮN'
-                    : 'NGHỈ DÀI'
+                    ? t('schedule.status.shortBreak')
+                    : t('schedule.status.longBreak')
                 }
               </div>
             </div>
@@ -395,30 +404,30 @@ export class RoadmapViewSchedule extends HTMLElement {
 
           <!-- Action Buttons Controls -->
           <div class="timer-controls-group">
-            <button class="btn-timer-secondary" id="btn-timer-reset" title="Đặt lại bộ đếm">
+            <button class="btn-timer-secondary" id="btn-timer-reset" title="${t('schedule.reset.title')}">
               ${ICONS.reset}
             </button>
             <button class="btn-timer-primary btn-timer-icon" id="btn-timer-toggle">
-              ${isRunning ? `${ICONS.pause} Tạm Dừng` : `${ICONS.play} Bắt Đầu`}
+              ${isRunning ? `${ICONS.pause} ${t('schedule.pause')}` : `${ICONS.play} ${t('schedule.start')}`}
             </button>
-            <button class="btn-timer-secondary" id="btn-timer-skip" title="Bỏ qua phiên">
+            <button class="btn-timer-secondary" id="btn-timer-skip" title="${t('schedule.skip.title')}">
               ${ICONS.skip}
             </button>
           </div>
 
           <!-- Toggles Row (Sound / Notification / Auto Break) -->
           <div class="timer-toggles-row">
-            <label class="toggle-option" title="Phát tiếng chuông khi hết giờ">
+            <label class="toggle-option" title="${t('schedule.toggle.sound.title')}">
               <input type="checkbox" id="chk-sound" ${settings.soundEnabled ? 'checked' : ''} />
-              Chuông báo
+              ${t('schedule.toggle.sound.label')}
             </label>
-            <label class="toggle-option" title="Gửi thông báo trình duyệt">
+            <label class="toggle-option" title="${t('schedule.toggle.notif.title')}">
               <input type="checkbox" id="chk-notif" ${settings.notificationEnabled ? 'checked' : ''} />
-              Thông báo Web
+              ${t('schedule.toggle.notif.label')}
             </label>
-            <label class="toggle-option" title="Tự động chạy timer nghỉ khi hết giờ tập trung">
+            <label class="toggle-option" title="${t('schedule.toggle.autobreak.title')}">
               <input type="checkbox" id="chk-autobreak" ${settings.autoStartBreaks ? 'checked' : ''} />
-              Tự động nghỉ
+              ${t('schedule.toggle.autobreak.label')}
             </label>
           </div>
 
@@ -431,8 +440,8 @@ export class RoadmapViewSchedule extends HTMLElement {
               ${ICONS.pomodoro}
             </div>
             <div class="metric-info">
-              <span class="metric-value">${todaySessions.length} phiên</span>
-              <span class="metric-label">Tập trung hôm nay</span>
+              <span class="metric-value">${todaySessions.length} ${plural(todaySessions.length, 'phiên', 'session', 'sessions')}</span>
+              <span class="metric-label">${t('schedule.metric.todayFocus')}</span>
             </div>
           </div>
 
@@ -442,7 +451,7 @@ export class RoadmapViewSchedule extends HTMLElement {
             </div>
             <div class="metric-info">
               <span class="metric-value">${todayMinutes}m</span>
-              <span class="metric-label">Thời gian học hôm nay (~${(todayMinutes / 60).toFixed(1)}h)</span>
+              <span class="metric-label">${t('schedule.metric.todayHours', { hours: todayHoursStr })}</span>
             </div>
           </div>
 
@@ -452,7 +461,7 @@ export class RoadmapViewSchedule extends HTMLElement {
             </div>
             <div class="metric-info">
               <span class="metric-value">${totalAccumulatedPoms}/${META_DATA.totalPomodoros}</span>
-              <span class="metric-label">Pomodoro tích lũy (Dashboard 40%)</span>
+              <span class="metric-label">${t('schedule.metric.accumulated')}</span>
             </div>
           </div>
         </div>
@@ -461,17 +470,17 @@ export class RoadmapViewSchedule extends HTMLElement {
         <div class="progress-card">
           <div class="progress-header progress-header--margin">
             <div class="progress-title section-title-flex">
-              ${ICONS.bookOpen} Nhật ký phiên tập trung gần nhất
+              ${ICONS.bookOpen} ${t('schedule.history.title')}
             </div>
             <span class="section-subtitle-muted">
-              ${sessions.length} phiên tổng cộng
+              ${t('schedule.history.totalCount', { count: sessions.length, unit: plural(sessions.length, 'phiên', 'session', 'sessions') })}
             </span>
           </div>
 
           ${
             sessions.length === 0
               ? `<div class="history-empty-text">
-                  Chưa có phiên tập trung nào. Hãy chọn Task và bấm Bắt Đầu!
+                  ${t('schedule.history.empty')}
                 </div>`
               : `<div class="history-list">
                   ${sessions
@@ -480,10 +489,14 @@ export class RoadmapViewSchedule extends HTMLElement {
                     .slice(0, 5)
                     .map((s) => {
                       const d = new Date(s.timestamp);
-                      const timeStr = `${d.getHours().toString().padStart(2, '0')}:${d
-                        .getMinutes()
-                        .toString()
-                        .padStart(2, '0')} (${d.getDate()}/${d.getMonth() + 1})`;
+                      const timeStr = `${d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })} (${d.toLocaleDateString(
+                        locale,
+                        { day: 'numeric', month: 'numeric' }
+                      )})`;
+                      // Resolve against the active language bundle first so old sessions
+                      // don't stay stuck in the language they were logged in.
+                      const liveTaskTitle = s.taskId ? allTasks.find((at) => at.id === s.taskId)?.title : undefined;
+                      const displayTaskTitle = liveTaskTitle || s.taskTitle;
                       return `
                         <div class="history-item">
                           <div class="section-title-flex">
@@ -493,14 +506,14 @@ export class RoadmapViewSchedule extends HTMLElement {
                             <span class="section-subtitle-muted">${timeStr}</span>
                             <span class="history-duration">(${s.durationMinutes}m)</span>
                             ${
-                              s.taskTitle
+                              displayTaskTitle
                                 ? `<span class="task-tag task-tag--primary">
-                                    ${s.taskTitle}
+                                    ${displayTaskTitle}
                                   </span>`
                                 : ''
                             }
                           </div>
-                          <button class="history-item-del" data-session-id="${s.id}" title="Xóa phiên này">
+                          <button class="history-item-del" data-session-id="${s.id}" title="${t('schedule.history.deleteTitle')}">
                             ${ICONS.trash}
                           </button>
                         </div>
@@ -592,7 +605,7 @@ export class RoadmapViewSchedule extends HTMLElement {
           updatePomodoroSettings({ notificationEnabled: granted });
           if (!granted) {
             (e.target as HTMLInputElement).checked = false;
-            showToast('Quyền thông báo trình duyệt bị từ chối hoặc chưa được cấp.', 'warning');
+            showToast(t('schedule.toast.notifDenied'), 'warning');
           }
         } else {
           updatePomodoroSettings({ notificationEnabled: false });
@@ -613,7 +626,7 @@ export class RoadmapViewSchedule extends HTMLElement {
         const sid = (e.currentTarget as HTMLElement).getAttribute('data-session-id');
         if (sid) {
           removePomodoroSession(sid);
-          showToast('Đã xóa phiên tập trung khỏi nhật ký', 'info');
+          showToast(t('schedule.toast.sessionDeleted'), 'info');
         }
       });
     });

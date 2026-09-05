@@ -31,7 +31,13 @@ This document provides a detailed overview of the directory structure, file resp
 │   ├── actions/                    # Business logic for user data import/export & backup operations
 │   │   └── backup.ts               # JSON export backup, JSON import restoration & progress reset handlers
 │   ├── data/                       # Pure static business data layer
-│   │   └── planData.ts             # Data model containing 100% roadmap content (13 Modules, 12-Week Schedule, Resources, 7 Tech Layers, Quit Criteria)
+│   │   ├── planData.ts             # Facade: getSprintModules()/getMetaData()/getTechStackLayers()/getQuitCriteriaData(), picks a bundle by state.lang
+│   │   ├── planData.vi.ts          # Vietnamese curriculum content (14 Modules, Resources, 7 Tech Layers, Quit Criteria)
+│   │   └── planData.en.ts          # English curriculum content - same ids/shape as planData.vi.ts
+│   ├── i18n/                       # UI chrome translation (Vietnamese/English)
+│   │   ├── strings.ts              # UI_STRINGS table, one flat key -> string map per language
+│   │   ├── index.ts                # t(key, params) lookup + plural(n, vi, enOne, enOther)
+│   │   └── dom.ts                  # applyStaticTranslations() - data-i18n sweep for header markup renderAll() doesn't reach
 │   ├── state/                      # Application State Management
 │   │   └── storage.ts              # State Store singleton - Manages AppState, localStorage & Pomodoro logs
 │   ├── styles/                     # Layered CSS system utilizing CSS Custom Properties (Tokens)
@@ -56,12 +62,13 @@ This document provides a detailed overview of the directory structure, file resp
 │   │   ├── roadmap-view-resources.ts  # <roadmap-view-resources> - Learning resource catalog with module filter
 │   │   ├── roadmap-view-techstack.ts  # <roadmap-view-techstack> - Visual breakdown of 7 AI Engineer tech stack layers
 │   │   └── roadmap-view-quitcriteria.ts # <roadmap-view-quitcriteria> - Interactive 13-module decision matrix & 4-step daily process
-│   ├── constants.ts                # Shared constants (STORAGE_KEY, THEME_KEY, ROUTE_IDS)
-│   ├── main.ts                     # Application Bootstrap - Initializes theme, router, event listeners & render loop
+│   ├── constants.ts                # Shared constants (STORAGE_KEY, THEME_KEY, LANG_KEY, ROUTE_IDS)
+│   ├── main.ts                     # Application Bootstrap - Initializes theme/language, router, event listeners & render loop
 │   ├── progress.ts                 # Pure Domain Logic - Engine calculating progress %, study hours & next task
 │   ├── renderer.ts                 # Central Observer Renderer - Registers listeners & triggers renderAll()
 │   ├── router.ts                   # Hash Router - Handles location hash routing (#/route), tab switching & state sync
-│   └── toast.ts                    # Lightweight UI toast notification utility
+│   ├── toast.ts                    # Lightweight UI toast notification utility
+│   └── vite-env.d.ts               # Vite client type declarations (enables import.meta.env)
 ├── .gitignore                      # List of files/folders excluded from Git version control (node_modules, dist)
 ├── index.html                      # Main HTML Shell (Header, Nav Tabs, View Containers & Toast container)
 ├── package.json                    # Project configuration, npm scripts (dev, build, preview) & devDependencies
@@ -106,17 +113,23 @@ Contains business actions for data import/export:
 - **`backup.ts`**: Provides `exportBackup()`, `importBackup()`, and `resetProgress()` functions allowing users to backup application state to JSON, restore state, or reset progress.
 
 #### `src/data/`
-- **`planData.ts`**: Single Source of Truth containing 100% of static business data, including 13 Master Modules (`SPRINT_MODULES`), 12-Week Pomodoro Schedule (`POMODORO_SCHEDULE`), Resources (`FREE_RESOURCES`), 7 Tech Stack Layers (`TECH_STACK_LAYERS`), and Quit Criteria Decision Matrix (`QUIT_CRITERIA_DATA`).
+- **`planData.vi.ts`** / **`planData.en.ts`**: Source of truth for static business data, one file per language with identical `id`s: 14 Master Modules (`SPRINT_MODULES`), Resources (nested in each module's `resources`), 7 Tech Stack Layers (`TECH_STACK_LAYERS`), and the Quit Criteria Decision Matrix (`QUIT_CRITERIA_DATA`).
+- **`planData.ts`**: Thin facade exposing `getSprintModules()` / `getMetaData()` / `getTechStackLayers()` / `getQuitCriteriaData()`, selecting a bundle by `state.lang`. Also runs a dev-only check comparing both files' `id` sets and logging any drift.
+
+#### `src/i18n/`
+- **`strings.ts`**: `UI_STRINGS` - a flat, dot-namespaced key -> string map for each language, covering header chrome, toasts, and every hardcoded label in the six views.
+- **`index.ts`**: `t(key, params?)` looks up the current language's string (falling back to Vietnamese, then the raw key) with `{param}` interpolation; `plural(n, vi, enOne, enOther)` picks an English singular/plural form (Vietnamese has no plural inflection).
+- **`dom.ts`**: `applyStaticTranslations()` sweeps `[data-i18n]` / `[data-i18n-attr]` elements in `index.html`, and updates `document.title` + the meta description. Registered as a render listener in `main.ts` since `renderAll()` only repaints the six Custom Elements, not the static header/nav markup.
 
 #### `src/state/`
-- **`storage.ts`**: Manages state storage. Reads and persists user data (`checked`, `activeTab`, `theme`, `pomodoroSessions`) to `localStorage`.
+- **`storage.ts`**: Manages state storage. Reads and persists user data (`checked`, `activeTab`, `theme`, `lang`, `pomodoroSessions`) to `localStorage`.
 
 #### `src/styles/`
 Modular CSS architecture organized into partials and connected via `@layer`:
 - **`main.css`**: Entry point importing all partials and declaring layer order `@layer reset, base, components, views, utilities;`.
 - **`_tokens.css`**: Declares global CSS Custom Properties for color schemes, Light/Dark themes, spacing, font families, and z-indices.
 - **`_reset-base.css`**: Normalizes HTML elements and base typography styling.
-- **`_header.css`**: Layout and styling rules for the App Header and Theme Switcher button.
+- **`_header.css`**: Layout and styling rules for the App Header, Theme Switcher button, and Language toggle button.
 - **`_tabs.css`**: Layout and styling rules for the Navigation Tab bar.
 - **`_main-layout.css`**: Layout container styling for view wrappers.
 - **`_views.css`**: Styling rules for each individual Custom Element view.
@@ -134,11 +147,11 @@ Pure utility modules containing no state:
 #### `src/views/`
 Contains 6 Native Custom Elements (Light-DOM Web Components) representing the 6 main UI tabs:
 - **`roadmap-view-dashboard.ts`**: Dashboard overview showing overall progress %, stats cards, active Sprint, and Next Task recommendations.
-- **`roadmap-view-roadmap.ts`**: Detailed 13-Module roadmap showing deliverables checklist and learning goals.
-- **`roadmap-view-schedule.ts`**: Interactive Pomodoro timer with 12-week study schedule views.
+- **`roadmap-view-roadmap.ts`**: Detailed 14-Module roadmap showing objectives, knowledge to load, and the deliverables checklist.
+- **`roadmap-view-schedule.ts`**: Interactive Pomodoro timer with session history and today's focus metrics.
 - **`roadmap-view-resources.ts`**: Learning resource catalog supporting search and module filtering.
 - **`roadmap-view-techstack.ts`**: Visual breakdown of the 7 AI Engineer tech stack layers.
-- **`roadmap-view-quitcriteria.ts`**: Interactive 13-module decision matrix and 4-step daily process view with real-time search filtering.
+- **`roadmap-view-quitcriteria.ts`**: Interactive 14-module decision matrix and 4-step daily process view with real-time search filtering.
 
 #### Root Files of `src/`
 - **`constants.ts`**: System-wide constants (`STORAGE_KEY`, `THEME_KEY`, `ROUTE_IDS`).
@@ -159,5 +172,8 @@ Contains 6 Native Custom Elements (Light-DOM Web Components) representing the 6 
    - All CSS partial files reside in `src/styles/` prefixed with `_[name].css`, except for `main.css`.
    - Always reference CSS Variables from `_tokens.css` instead of hardcoding static hex/rgb color values.
 3. **Data Protection & Primary Keys**:
-   - `src/data/planData.ts` contains zero UI logic or user state.
-   - Task and item `id`s in `planData.ts` must remain static and unchanged, as they function as primary keys for `localStorage` persistence.
+   - `src/data/planData.vi.ts` / `planData.en.ts` contain zero UI logic or user state; `planData.ts` is a pure accessor facade over them.
+   - Task and item `id`s must remain static and unchanged, as they function as primary keys for `localStorage` persistence — and must be identical in both language files, since the two are read interchangeably depending on `state.lang`.
+4. **UI Text vs. Curriculum Data**:
+   - Static, non-curriculum UI text (buttons, toasts, headings, placeholders) lives in `src/i18n/strings.ts` behind the `t()` lookup, not hardcoded in view templates.
+   - Curriculum content (module/task/resource text) lives in the `planData.*.ts` files, not in `src/i18n/`.

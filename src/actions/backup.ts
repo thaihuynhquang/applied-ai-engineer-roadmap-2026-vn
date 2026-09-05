@@ -1,5 +1,6 @@
 import { exportStateJSON, importState, resetProgress } from '../state/storage';
 import { showToast } from '../toast';
+import { t } from '../i18n';
 
 export const handleExportBackup = (): void => {
   const jsonStr = exportStateJSON();
@@ -13,7 +14,7 @@ export const handleExportBackup = (): void => {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  showToast('Đã tải xuống file sao lưu tiến độ (.json)', 'success');
+  showToast(t('backup.toast.exported'), 'success');
 };
 
 export const handleImportBackup = (): void => {
@@ -32,13 +33,13 @@ export const handleImportBackup = (): void => {
         const parsed = JSON.parse(content);
         if (parsed && typeof parsed === 'object') {
           importState(parsed);
-          showToast('Khôi phục tiến độ thành công!', 'success');
+          showToast(t('backup.toast.imported'), 'success');
         } else {
-          showToast('File backup không hợp lệ!', 'error');
+          showToast(t('backup.toast.invalidFile'), 'error');
         }
       } catch (err) {
         console.error(err);
-        showToast('Lỗi đọc file JSON!', 'error');
+        showToast(t('backup.toast.readError'), 'error');
       }
     };
     reader.readAsText(file);
@@ -48,11 +49,9 @@ export const handleImportBackup = (): void => {
 };
 
 export const handleResetProgress = (): void => {
-  const confirmed = window.confirm(
-    'Bạn có chắc chắn muốn đặt lại (Reset) toàn bộ tiến độ học tập về 0% không?\nThao tác này không thể hoàn tác trừ khi bạn có file sao lưu.'
-  );
+  const confirmed = window.confirm(t('backup.confirm.reset'));
   if (confirmed) {
     resetProgress();
-    showToast('Đã đặt lại tiến độ về 0%', 'info');
+    showToast(t('backup.toast.resetDone'), 'info');
   }
 };

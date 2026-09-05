@@ -1,10 +1,13 @@
-import { QUIT_CRITERIA_DATA } from '../data/planData';
+import { getQuitCriteriaData } from '../data/planData';
+import { getState } from '../state/storage';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
 import { ICONS } from '../utils/icons';
+import { t } from '../i18n';
 
 export class RoadmapViewQuitCriteria extends HTMLElement {
   private boundRefresh = this.refresh.bind(this);
   private searchQuery = '';
+  private lastLang = getState().lang;
 
   connectedCallback(): void {
     registerRenderListener(this.boundRefresh);
@@ -29,6 +32,7 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
     const gridContainer = this.querySelector('#matrix-cards-grid');
     if (!gridContainer) return;
 
+    const QUIT_CRITERIA_DATA = getQuitCriteriaData();
     const filteredModules = QUIT_CRITERIA_DATA.decisionMatrix.filter((item) => {
       if (!this.searchQuery) return true;
       return (
@@ -41,7 +45,7 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
     if (filteredModules.length === 0) {
       gridContainer.innerHTML = `
         <div class="quit-empty-state">
-          ${ICONS.info} Không tìm thấy Module phù hợp với từ khóa "${this.searchQuery}".
+          ${ICONS.info} ${t('quitcriteria.empty', { query: this.searchQuery })}
         </div>
       `;
       return;
@@ -63,7 +67,7 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
             <!-- Trigger Condition -->
             <div class="quit-box quit-box--trigger">
               <div class="quit-box-label">
-                ${ICONS.warning} Ngưỡng Cảnh Báo (Trigger Kích Hoạt)
+                ${ICONS.warning} ${t('quitcriteria.trigger.label')}
               </div>
               <div class="quit-box-content">${item.trigger}</div>
             </div>
@@ -71,7 +75,7 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
             <!-- Pivot Action -->
             <div class="quit-box quit-box--pivot">
               <div class="quit-box-label">
-                ${ICONS.cornerUpRight} Hành Động Xoay Trục (Pivot Action)
+                ${ICONS.cornerUpRight} ${t('quitcriteria.pivot.label')}
               </div>
               <div class="quit-box-content">${item.pivotAction}</div>
             </div>
@@ -83,6 +87,14 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
   }
 
   refresh(): void {
+    const currentLang = getState().lang;
+    if (currentLang !== this.lastLang) {
+      this.searchQuery = '';
+      this.lastLang = currentLang;
+    }
+
+    const QUIT_CRITERIA_DATA = getQuitCriteriaData();
+
     this.innerHTML = `
       <div class="quitcriteria-container">
         <!-- Compact Section Header -->
@@ -100,7 +112,7 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
         <!-- 4-Step Protocol Ribbon -->
         <div class="stepper-ribbon-card">
           <div class="ribbon-title">
-            ${ICONS.clipboardCheck} <b>Quy Trình 4 Bước Thực Thi Hàng Ngày:</b>
+            ${ICONS.clipboardCheck} <b>${t('quitcriteria.process.title')}</b>
           </div>
           <div class="stepper-ribbon-steps">
             ${QUIT_CRITERIA_DATA.dailyProcess
@@ -123,9 +135,9 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
         <div class="quit-control-bar">
           <div class="quit-search-wrapper">
             <input 
-              type="text" 
-              id="quit-search-input" 
-              placeholder="Tìm kiếm Module, lỗi Trigger hoặc Pivot Action..." 
+              type="text"
+              id="quit-search-input"
+              placeholder="${t('quitcriteria.search.placeholder')}"
               value="${this.searchQuery}"
               class="quit-search-input"
             />

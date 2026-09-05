@@ -1,8 +1,9 @@
-import { SPRINT_MODULES } from '../data/planData';
+import { getSprintModules } from '../data/planData';
 import { getState, toggleResourceFlag } from '../state/storage';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
 import { ICONS } from '../utils/icons';
 import { resolveResourceUrl } from '../utils/url';
+import { t } from '../i18n';
 
 
 export class RoadmapViewResources extends HTMLElement {
@@ -19,6 +20,7 @@ export class RoadmapViewResources extends HTMLElement {
   }
 
   refresh(): void {
+    const SPRINT_MODULES = getSprintModules();
     const { resourceFlags } = getState();
 
     // Flatten all resources with module metadata
@@ -35,10 +37,10 @@ export class RoadmapViewResources extends HTMLElement {
         <div class="section-header">
           <div>
             <div class="section-title section-title-flex">
-              ${ICONS.bookOpen} Thư Viện Tài Nguyên Học Tập & Tra Cứu
+              ${ICONS.bookOpen} ${t('resources.header.title')}
             </div>
             <div class="section-subtitle-muted">
-              Danh sách khóa học video từ Packt Publishing & tài liệu official docs 2026.
+              ${t('resources.header.subtitle')}
             </div>
           </div>
         </div>
@@ -46,7 +48,7 @@ export class RoadmapViewResources extends HTMLElement {
         <!-- Filter Tabs -->
         <div class="filter-bar-container">
           <button class="action-btn btn-res-filter ${this.selectedModuleId === 'all' ? 'active' : ''}" data-mod="all">
-            <span class="btn-label">Tất Cả Modules</span>
+            <span class="btn-label">${t('resources.filter.all')}</span>
           </button>
           ${SPRINT_MODULES.map(
             (s) => `
@@ -95,10 +97,10 @@ export class RoadmapViewResources extends HTMLElement {
                           Module ${res.moduleNum}
                         </span>
                       </div>
-                      <button 
-                        class="action-btn btn-flag-resource btn-reset-filter" 
+                      <button
+                        class="action-btn btn-flag-resource btn-reset-filter"
                         data-res-id="${res.id}"
-                        title="Đánh dấu tài nguyên này"
+                        title="${t('resources.flag.title')}"
                       >
                         ${isFlagged ? ICONS.starFilled : ICONS.starOutline}
                       </button>
@@ -110,15 +112,15 @@ export class RoadmapViewResources extends HTMLElement {
 
                   <div class="resource-footer">
                     <span class="free-resource-tag">
-                      ${ICONS.gradCap} ${res.isFree ? 'Miễn phí 100%' : 'Trả phí'}
+                      ${ICONS.gradCap} ${res.isFree ? t('resources.free') : t('resources.paid')}
                     </span>
-                    <a 
-                      href="${resolveResourceUrl(res.url)}" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href="${resolveResourceUrl(res.url)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       class="action-btn btn-resource-primary"
                     >
-                      <span class="btn-label">Mở Link</span> ${ICONS.externalLink}
+                      <span class="btn-label">${t('resources.openLink')}</span> ${ICONS.externalLink}
                     </a>
                   </div>
                 </div>
