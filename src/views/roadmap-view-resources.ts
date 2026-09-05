@@ -1,4 +1,4 @@
-import { SPRINT_MODULES } from '../data/planData';
+import { getSprintModules } from '../data/planData';
 import { getState, toggleResourceFlag } from '../state/storage';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
 import { ICONS } from '../utils/icons';
@@ -20,6 +20,7 @@ export class RoadmapViewResources extends HTMLElement {
   }
 
   refresh(): void {
+    const SPRINT_MODULES = getSprintModules();
     const { resourceFlags } = getState();
 
     // Flatten all resources with module metadata

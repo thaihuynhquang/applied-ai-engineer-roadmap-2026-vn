@@ -89,6 +89,31 @@ export interface QuitCriteriaData {
   decisionMatrix: ModuleQuitRule[];
 }
 
+export interface ProjectMeta {
+  title: string;
+  subtitle: string;
+  targetProject: string;
+  totalWeeks: number;
+  totalPomodoros: number;
+  totalHours: number;
+  hoursPerDay: number;
+  principles: string[];
+  systemArchitecture: {
+    frontend: string;
+    backend: string;
+    database: string;
+    llms: string;
+    observability: string;
+  };
+}
+
+export interface PlanDataBundle {
+  META_DATA: ProjectMeta;
+  SPRINT_MODULES: SprintModule[];
+  TECH_STACK_LAYERS: TechStackLayer[];
+  QUIT_CRITERIA_DATA: QuitCriteriaData;
+}
+
 export interface AppState {
   checked: Record<string, boolean>;
   resourceFlags: Record<string, boolean>;

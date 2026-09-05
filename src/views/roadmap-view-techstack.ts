@@ -1,4 +1,4 @@
-import { TECH_STACK_LAYERS } from '../data/planData';
+import { getTechStackLayers } from '../data/planData';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
 import { ICONS } from '../utils/icons';
 import { t } from '../i18n';
@@ -16,6 +16,7 @@ export class RoadmapViewTechstack extends HTMLElement {
   }
 
   refresh(): void {
+    const TECH_STACK_LAYERS = getTechStackLayers();
     this.innerHTML = `
       <div class="techstack-container">
         <div class="section-header">

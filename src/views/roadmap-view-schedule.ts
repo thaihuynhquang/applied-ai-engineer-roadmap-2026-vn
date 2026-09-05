@@ -1,4 +1,4 @@
-import { SPRINT_MODULES, META_DATA } from '../data/planData';
+import { getSprintModules, getMetaData } from '../data/planData';
 import {
   getState,
   addPomodoroSession,
@@ -159,6 +159,7 @@ export class RoadmapViewSchedule extends HTMLElement {
 
   private onTimerComplete(): void {
     stopTimerInterval();
+    const SPRINT_MODULES = getSprintModules();
     const settings = getState().pomodoroSettings || DEFAULT_POMODORO_SETTINGS;
 
     if (timerMode === 'focus') {
@@ -246,6 +247,8 @@ export class RoadmapViewSchedule extends HTMLElement {
   }
 
   refresh(): void {
+    const SPRINT_MODULES = getSprintModules();
+    const META_DATA = getMetaData();
     const state = getState();
     const settings = state.pomodoroSettings || DEFAULT_POMODORO_SETTINGS;
     const sessions = state.pomodoroSessions || [];

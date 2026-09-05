@@ -1,6 +1,6 @@
 import { calculateProgress } from '../progress';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
-import { META_DATA, SPRINT_MODULES } from '../data/planData';
+import { getMetaData, getSprintModules } from '../data/planData';
 import { toggleChecked } from '../state/storage';
 import { ICONS } from '../utils/icons';
 import { t } from '../i18n';
@@ -18,6 +18,8 @@ export class RoadmapViewDashboard extends HTMLElement {
   }
 
   refresh(): void {
+    const META_DATA = getMetaData();
+    const SPRINT_MODULES = getSprintModules();
     const stats = calculateProgress();
 
     this.innerHTML = `

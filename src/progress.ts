@@ -1,4 +1,4 @@
-import { SPRINT_MODULES, META_DATA } from './data/planData';
+import { getSprintModules, getMetaData } from './data/planData';
 import { getState } from './state/storage';
 
 export interface ProgressSummary {
@@ -26,6 +26,8 @@ export interface ProgressSummary {
 }
 
 export const calculateProgress = (): ProgressSummary => {
+  const SPRINT_MODULES = getSprintModules();
+  const META_DATA = getMetaData();
   const { checked } = getState();
 
   // 1. Deliverables (Tasks) Progress

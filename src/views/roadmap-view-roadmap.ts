@@ -1,4 +1,4 @@
-import { SPRINT_MODULES } from '../data/planData';
+import { getSprintModules } from '../data/planData';
 import { getState, toggleChecked } from '../state/storage';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
 import { ICONS } from '../utils/icons';
@@ -17,6 +17,7 @@ export class RoadmapViewRoadmap extends HTMLElement {
   }
 
   refresh(): void {
+    const SPRINT_MODULES = getSprintModules();
     const { checked } = getState();
 
     this.innerHTML = `

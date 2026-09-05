@@ -1,4 +1,4 @@
-import { QUIT_CRITERIA_DATA } from '../data/planData';
+import { getQuitCriteriaData } from '../data/planData';
 import { getState } from '../state/storage';
 import { registerRenderListener, unregisterRenderListener } from '../renderer';
 import { ICONS } from '../utils/icons';
@@ -32,6 +32,7 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
     const gridContainer = this.querySelector('#matrix-cards-grid');
     if (!gridContainer) return;
 
+    const QUIT_CRITERIA_DATA = getQuitCriteriaData();
     const filteredModules = QUIT_CRITERIA_DATA.decisionMatrix.filter((item) => {
       if (!this.searchQuery) return true;
       return (
@@ -91,6 +92,8 @@ export class RoadmapViewQuitCriteria extends HTMLElement {
       this.searchQuery = '';
       this.lastLang = currentLang;
     }
+
+    const QUIT_CRITERIA_DATA = getQuitCriteriaData();
 
     this.innerHTML = `
       <div class="quitcriteria-container">
