@@ -79,7 +79,6 @@ export const UI_STRINGS: Record<Lang, Record<string, string>> = {
     'resources.free': 'Miễn phí 100%',
     'resources.paid': 'Trả phí',
     'resources.openLink': 'Mở Link',
-    'resources.viDocNote': ' (Tài liệu tiếng Việt)',
 
     'techstack.header.title': 'Báo Cáo Chuyên Sâu: AI Application Tech Stack 2026',
     'techstack.header.subtitle':
@@ -195,7 +194,6 @@ export const UI_STRINGS: Record<Lang, Record<string, string>> = {
     'resources.free': '100% Free',
     'resources.paid': 'Paid',
     'resources.openLink': 'Open Link',
-    'resources.viDocNote': ' (Vietnamese-language document)',
 
     'techstack.header.title': 'In-Depth Report: AI Application Tech Stack 2026',
     'techstack.header.subtitle':
